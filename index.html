@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIPCOIN ARENA</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090b10;color:#f4f5f8;font-family:Arial,sans-serif}
+.wrap{max-width:1000px;margin:auto;padding:24px 16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:45px}
+.logo{font-size:22px;font-weight:900;letter-spacing:1px}
+.logo span{color:#e8bd62}
+.balance,.panel,.match{background:#141923;border:1px solid #283142;border-radius:15px;padding:16px}
+.balance{color:#e8bd62;font-weight:bold}
+.hero{margin-bottom:28px}
+.hero small{color:#e8bd62;letter-spacing:3px}
+h1{font-size:42px;margin:10px 0}
+p{color:#929bad;line-height:1.5}
+.layout{display:grid;grid-template-columns:1fr 270px;gap:16px}
+.match{margin-bottom:13px}
+.matchtop{display:flex;justify-content:space-between;color:#929bad;font-size:12px}
+.teams{display:flex;justify-content:space-around;align-items:center;padding:22px 0;font-size:20px;font-weight:bold}
+.vs{color:#697489;font-size:12px}
+.buttons{display:flex;gap:10px}
+button{flex:1;background:#202938;color:white;border:1px solid #344056;padding:13px;border-radius:9px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+button.selected{border-color:#e8bd62;color:#e8bd62;background:#30291c}
+.panel{margin-bottom:13px}
+.panel h3{font-size:13px;color:#aab3c2}
+.number{font-size:32px;color:#e8bd62;font-weight:bold}
+.history{font-size:12px;color:#aab3c2;padding:7px 0;border-bottom:1px solid #283142}
+.notice{font-size:11px;color:#778195;margin-top:22px}
+@media(max-width:700px){.layout{grid-template-columns:1fr}h1{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">VIPCOIN <span>ARENA</span></div>
+<div class="balance" id="balance">100 VIPC</div>
+</header>
+
+<section class="hero">
+<small>SEASON 01 / DEMO</small>
+<h1>Твой прогноз.<br>Твоя арена.</h1>
+<p>Выбирай победителя учебных матчей CS2 и набирай игровые очки.</p>
+</section>
+
+<div class="layout">
+<main>
+<h3>МАТЧИ АРЕНЫ</h3>
+<div id="matches"></div>
+</main>
+
+<aside>
+<div class="panel">
+<h3>ТВОЙ БАЛАНС</h3>
+<div class="number" id="sideBalance">100</div>
+<p>VIPCOINS · игровые очки</p>
+</div>
+<div class="panel">
+<h3>ПРАВИЛА</h3>
+<strong>+25 очков</strong>
+<p>За правильный прогноз в завершённом учебном матче.</p>
+</div>
+<div class="panel">
+<h3>МОИ ПРОГНОЗЫ</h3>
+<div id="history">Пока пусто</div>
+</div>
+</aside>
+</div>
+
+<div class="notice">
+VIPCOIN ARENA — демонстрационная игра. Очки нельзя купить, продать, вывести или обменять на деньги и призы. Реальных ставок нет.
+</div>
+</div>
+
+<script>
+let balance=100;
+let predictions={};
+
+const matches=[
+{id:"1",a:"NAVI",b:"FaZe"},
+{id:"2",a:"Vitality",b:"G2"},
+{id:"3",a:"Spirit",b:"MOUZ"},
+{id:"4",a:"FURIA",b:"The MongolZ"}
+];
+
+function render(){
+document.getElementById("matches").innerHTML=matches.map(m=>{
+let selected=predictions[m.id];
+return `
+<div class="match">
+<div class="matchtop">
+<span>COUNTER-STRIKE · DEMO</span>
+<span>УЧЕБНЫЙ МАТЧ</span>
+</div>
+<div class="teams">
+<span>${m.a}</span>
+<span class="vs">VS</span>
+<span>${m.b}</span>
+</div>
+<div class="buttons">
+<button ${selected?"disabled":""}
+class="${selected===m.a?"selected":""}"
+onclick="choose('${m.id}','${m.a}')">Победа ${m.a}</button>
+<button ${selected?"disabled":""}
+class="${selected===m.b?"selected":""}"
+onclick="choose('${m.id}','${m.b}')">Победа ${m.b}</button>
+</div>
+</div>`;
+}).join("");
+
+document.getElementById("balance").textContent=balance+" VIPC";
+document.getElementById("sideBalance").textContent=balance;
+
+let entries=Object.values(predictions);
+document.getElementById("history").innerHTML=
+entries.length?entries.map(p=>
+`<div class="history">${p.match}: <b>${p.team}</b></div>`
+).join(""):"Пока пусто";
+}
+
+function choose(id,team){
+if(predictions[id])return;
+let match=matches.find(m=>m.id===id);
+predictions[id]={
+match:match.a+" vs "+match.b,
+team:team
+};
+render();
+}
+render();
+</script>
+</body>
+</html>
